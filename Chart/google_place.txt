@@ -1,0 +1,41 @@
+Start
+  │
+  ▼
+Receive User Input (prompt, placeName, userTime, userId, previousIntent)
+  │
+  ▼
+Parse Intent from Prompt
+  │
+  ├── Is Intent = greeting?
+  │       └── Yes → Return greeting message
+  │
+  ├── Is Intent = list_places OR check_availability_with_list_place?
+  │       └── Extract city/area
+  │             └── If location found
+  │                  └── Get restaurants list
+  │                       └── If restaurants found → Format and return list
+  │                       └── Else → Return "no restaurants found"
+  │             └── Else → Return "no restaurants found"
+  │
+  ├── Is Intent = check_availability?
+  │       └── Extract place name
+  │       └── Extract location
+  │       └── Get availability via Google API
+  │       └── Return availability response
+  │
+  ├── Is Intent = book_place?
+  │       └── Extract place name and location
+  │       └── Call check availability with booking=True
+  │       └── Return booking response
+  │
+  ├── Is Intent = get_details?
+  │       └── Extract place name and location
+  │       └── Get details via Google API
+  │       └── Format and return restaurant details
+  │
+  └── Else
+          ├── Try to extract details anyway
+          └── If found → Return details
+          └── Else → Return default fallback message
+
+End
