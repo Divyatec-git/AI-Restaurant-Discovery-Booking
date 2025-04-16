@@ -21,3 +21,22 @@ venv\Scripts\activate
 ### uvicorn main_agent:app --host 0.0.0.0 --port 8000 --reload
  ### python --version
  ### pip install package_name
+
+## Redis Setup
+
+``
+Download Redis for Windows:
+Microsoft Archive Redis Build
+
+cd C:\Redis
+redis-server
+redis-cli ping
+# Should return: PONG
+
+cd C:\Redis
+redis-cli
+
+KEYS *                # List all keys
+GET chat:user:123     # Get string key
+HGETALL chat:user:123 # Get hash key
+```
