@@ -39,3 +39,14 @@ KEYS *                # List all keys
 GET chat:user:123     # Get string key
 HGETALL chat:user:123 # Get hash key
 ```
+##  For Ubuntu / Linux:
+
+``` sudo apt install redis-server
+sudo systemctl start redis
+sudo systemctl enable redis
+redis-cli ping
+redis-cli
+
+KEYS *
+GET user:999:chat_history
+```
