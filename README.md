@@ -8,7 +8,12 @@ This project is an **AI-powered restaurant discovery and booking assistant** bui
 
 ### ✅ Create Virtual Environment
 
-```bash
-python -m venv venv ```
 
-# Activate Virtual Environment
+python -m venv venv 
+
+## Activate Virtual Environment
+
+venv\Scripts\activate
+
+## pip install -r requirements.txt
+## pip freeze > requirements.txt
