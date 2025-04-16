@@ -24,8 +24,7 @@ venv\Scripts\activate
 
 ## Redis Setup
 
-``
-Download Redis for Windows:
+``` Download Redis for Windows:
 Microsoft Archive Redis Build
 
 cd C:\Redis
