@@ -24,7 +24,7 @@ venv\Scripts\activate
 
 ## Redis Installation (Python)
 ``` pip install redis
-redis-server --version
+   redis-server --version
 ```
 
 ## Redis Setup
