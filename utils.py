@@ -878,12 +878,12 @@ def check_availability_google(restaurant_name, user_prompt, place_name="Dubai",b
             if book == True:
                 requestdata = {
                         "country_code":91,
-                        "table_booking_recipient":7283947790,
-                        "restaurant_name":"Puravida",
+                        "table_booking_recipient":12121212,
+                        "restaurant_name":"ABCD",
                         "venue_manager_name":fake.first_name(),
                         "booking_date":"2023-08-15",
                         "user_name":fake.first_name(),
-                        "user_phone":"+91 7283947790",
+                        "user_phone":"+91 12121212",
                         "total_person":"2",
                         "user_email":"YVY8o@example.com"
                 }
