@@ -9,8 +9,8 @@ from pydantic import BaseModel
 import google.generativeai as genai 
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
-from chat_history import get_chat_history, move_all_chats_to_mysql, store_chat_in_redis
-from utils import check_availability_google, convert_to_ampm, extract_cuisine_type, format_restaurant_chat_response,get_place_details_by_name,check_availability,extract_place_name,find_place_in_db,extract_place_name_gemini,extract_time_from_prompt,gemini_generate_general_response,book_place,get_restaurants,format_places_for_chat,extract_city_area_gemini,get_restaurant_details
+from chat_history import store_chat_in_redis
+from utils import check_availability_google, extract_cuisine_type, format_restaurant_chat_response,extract_place_name_gemini,get_restaurants,format_places_for_chat,extract_city_area_gemini,get_restaurant_details
 from mail import send_email
 load_dotenv()
 import uvicorn
@@ -43,99 +43,8 @@ app.add_middleware(
 # Load a medium-sized model for better accuracy
 nlp = spacy.load("en_core_web_md")  
 
-greetings = [
-        "Great choice!", "Awesome pick!", "Fantastic selection!", "You'll love this place!",
-        "This place is a must-visit!", "An excellent choice for your meal!"
-    ]
-booking_prompts = [
-        "Would you like to book a table in advance?",
-        "Shall I help you reserve a table?",
-        "Do you want to secure a spot now?",
-        "Want me to check for available reservations?",
-        "Planning to dine here? I can help with reservations!"
-    ]
- 
-INTENT_EXAMPLES = {
-    "greeting": ["hello", "hi there", "hey", "good morning"],
-    "list_places": ["show me restaurants", "list clubs", "find dining places"],
-    "check_availability": ["is this place open?", "check if XYZ is available", "what are the timings?","timing"],
-    "book_place": ["I want to book a table", "make a reservation", "reserve a spot", "I want to book a table at XYZ", "book my table at XYZ", "book table","book table in XYZ for this saturday or any day","table for 2 at XYZ"],
-    "get_details": ["tell me about this place", "give me more info on XYZ", "give me details about xyz", "what about this place xyz", "tell me about", "what is", "give me details on", "Provide a detail", "provide details"]
-}
-
-# Intent Priority Order (Higher Index = Higher Priority)
-# INTENT_PRIORITY = ["greeting", "list_places", "check_availability", "get_details", "book_place"]
-INTENT_PRIORITY = ["list_places", "check_availability", "get_details", "book_place", "greeting"]
-
-
-# Keywords for early detection
-INTENT_KEYWORDS = {
-    "greeting": ["hello", "hi", "hey", "morning"],
-    "list_places": ["show", "list", "find", "places", "restaurants", "clubs", "dining","place"],
-    "check_availability": ["open", "available", "timings", "hours", "closed", "accepting customers",'between','is open'],
-    "book_place": ["book", "reservation", "reserve", "schedule",'to','booking'],
-    "get_details": ["tell", "details", "info", "what is", "more info", "about", "provide"]
-}
-
-
 def clean_text(text):
     return re.sub(r'[^\w\s]', '', text.lower())
-
-def is_time_only_prompt(prompt: str) -> bool:
-    prompt = prompt.lower().strip()
-    
-    # Check for typical patterns
-    time_patterns = [
-        r"\b\d{1,2}(:\d{2})?\s*(am|pm)?\b",
-        r"\bbetween\s+\d{1,2}(:\d{2})?\s*(am|pm)?\s+and\s+\d{1,2}(:\d{2})?\s*(am|pm)?\b",
-        r"\bfrom\s+\d{1,2}(:\d{2})?\s*(am|pm)?\s+to\s+\d{1,2}(:\d{2})?\s*(am|pm)?\b"
-    ]
-    
-    if any(re.search(pattern, prompt) for pattern in time_patterns):
-        intent_keywords = [
-            "book", "reserve", "open", "available", "details", "show", "list", "find", "info"
-        ]
-        if not any(word in prompt for word in intent_keywords):
-            return True
-    return False
-def detect_intent(user_prompt,previous_intent=None):
-    user_prompt_clean = clean_text(user_prompt)
-    intent_scores = {}
-
-    if is_time_only_prompt(user_prompt_clean):
-        return previous_intent
-    # Step 1: Keyword Matching with count
-    for intent, keywords in INTENT_KEYWORDS.items():
-        hits = sum(1 for kw in keywords if kw in user_prompt_clean)
-        if hits > 0:
-            intent_scores[intent] = hits
-
-    # Step 2: Fuzzy Matching if no keyword match
-    if not intent_scores:
-        for intent, examples in INTENT_EXAMPLES.items():
-            match, score = process.extractOne(user_prompt_clean, examples)
-            if score > 70:
-                intent_scores[intent] = score / 100  # Normalize for later comparison
-
-    # Step 3: Handle no detected intent
-    if not intent_scores:
-        # If only time is detected and no place name, fallback to previous intent
-        if is_time_only_prompt(user_prompt_clean):
-            return previous_intent
-        else:
-            return None
-        
-    if not intent_scores:
-        return None
-
-    print(intent_scores.items(),user_prompt_clean)
-    # Step 3: Sort by score desc, then by priority
-    sorted_intents = sorted(
-        intent_scores.items(),
-        key=lambda x: (-x[1], INTENT_PRIORITY.index(x[0]))
-    )
-
-    return sorted_intents[0][0]
 
 
 def parse_user_input(user_input):
@@ -306,8 +215,7 @@ def restaurant_club_agent(user_input: UserInput):
 
         return {"response": " I'm a helpful assistant that focuses on finding restaurants, clubs, and availability. What would you like to book?",'intent':intent}
     
-    # Default to GPT response if no conditions are met
-    # return {"response": gemini_chat_fallback(prompt)}
+ 
 
 
 if __name__ == "__main__":
