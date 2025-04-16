@@ -22,8 +22,12 @@ venv\Scripts\activate
  ### python --version
  ### pip install package_name
 
-## Redis Setup
+## Redis Installation (Python)
+``` pip install redis
+redis-server --version
+```
 
+## Redis Setup
 ``` Download Redis for Windows:
 Microsoft Archive Redis Build
 
@@ -49,4 +53,9 @@ redis-cli
 
 KEYS *
 GET user:999:chat_history
+```
+## Kill Uvicorn (Port 8000) on Windows
+
+```netstat -ano | findstr :8000
+taskkill /PID <PID_FROM_ABOVE> /F
 ```
