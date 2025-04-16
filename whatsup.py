@@ -17,7 +17,7 @@ def send_whatsapp_notification(request, booking_type):
             "to": f"{request['country_code']}{request['table_booking_recipient']}",
             "type": "template",
             "template": {
-                "name": "puravida_restaurant_table_booking",
+                "name": "restaurant_table_booking",
                 "language": {
                     "code": "en_US"
                 },
@@ -26,7 +26,7 @@ def send_whatsapp_notification(request, booking_type):
                         "type": "body",
                         "parameters": [
                             {"type": "text", "text": request['restaurant_name']},
-                            {"type": "text", "text": request['venue_manager_name']},
+                            {"type": "text", "text": request['manager_name']},
                             {"type": "text", "text": request['booking_date']},
                             {"type": "text", "text": request['user_name']},
                             {"type": "text", "text": request['user_phone']},
