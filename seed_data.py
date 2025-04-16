@@ -11,7 +11,7 @@ def get_db_connection():
         host=os.getenv("DB_HOST", "localhost"),
         user=os.getenv("DB_USER", "root"),
         password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "puravida_agent")
+        database=os.getenv("DB_NAME", "agent")
     )
     return conn
 
